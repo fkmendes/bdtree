@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beast namespace="beast.evolution.speciation:beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.branchratemodel:beast.evolution.likelihood" required="BEAST v2.5.0" version="2.5">
+
+  <map name="Uniform" >beast.math.distributions.Uniform</map>
+  <map name="Exponential" >beast.math.distributions.Exponential</map>
+  <map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
+  <map name="Normal" >beast.math.distributions.Normal</map>
+  <map name="Beta" >beast.math.distributions.Beta</map>
+  <map name="Gamma" >beast.math.distributions.Gamma</map>
+  <map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
+  <map name="prior" >beast.math.distributions.Prior</map>
+  <map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
+  <map name="OneOnX" >beast.math.distributions.OneOnX</map>
+  <map name="Dirichlet" >beast.math.distributions.Dirichlet</map>
+
+    <data id="speciesNames" spec="Alignment" name="alignment">
+        <sequence id="seq_1" spec="Sequence" taxon="sp_1" totalcount="4" value="?"/>
+        <sequence id="seq_2" spec="Sequence" taxon="sp_2" totalcount="4" value="?"/>
+        <sequence id="seq_3" spec="Sequence" taxon="sp_3" totalcount="4" value="?"/>
+        <sequence id="seq_4" spec="Sequence" taxon="sp_4" totalcount="4" value="?"/>
+        <sequence id="seq_5" spec="Sequence" taxon="sp_5" totalcount="4" value="?"/>
+        <sequence id="seq_6" spec="Sequence" taxon="sp_6" totalcount="4" value="?"/>
+        <sequence id="seq_7" spec="Sequence" taxon="sp_7" totalcount="4" value="?"/>
+        <sequence id="seq_8" spec="Sequence" taxon="sp_8" totalcount="4" value="?"/>
+        <sequence id="seq_9" spec="Sequence" taxon="sp_9" totalcount="4" value="?"/>
+        <sequence id="seq_10" spec="Sequence" taxon="sp_10" totalcount="4" value="?"/>
+
+    </data>
+
+    <init id="RandomTree" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@TheTree" taxa="@speciesNames">
+        <populationModel id="ConstantPopulation" spec="ConstantPopulation">
+            <parameter id="randomPopSize" spec="parameter.RealParameter" name="popSize">1.0</parameter>
+        </populationModel>
+    </init>
+
+  <run id="mcmc" spec="MCMC" chainLength="50000000">
+    <state id="state" storeEvery="5000">
+        <tree id="TheTree" spec="beast.evolution.tree.Tree" name="stateNode">
+            <taxonset id="TaxonSet" spec="TaxonSet">
+                <taxon id="sp_1" spec="Taxon"/>
+                <taxon id="sp_2" spec="Taxon"/>
+                <taxon id="sp_3" spec="Taxon"/>
+                <taxon id="sp_4" spec="Taxon"/>
+                <taxon id="sp_5" spec="Taxon"/>
+                <taxon id="sp_6" spec="Taxon"/>
+                <taxon id="sp_7" spec="Taxon"/>
+                <taxon id="sp_8" spec="Taxon"/>
+                <taxon id="sp_9" spec="Taxon"/>
+                <taxon id="sp_10" spec="Taxon"/>
+            </taxonset>
+            <trait id="FossilSet" spec="beast.evolution.tree.TraitSet" traitname="date-backward">
+                sp_1=0.0,
+                sp_2=1.0,
+                sp_3=2.0,
+                sp_4=3.0,
+                sp_5=4.0,
+                sp_6=5.0,
+                sp_7=6.0,
+                sp_8=7.0,
+                sp_9=8.0,
+                sp_10=9.0
+                <taxa idref="TaxonSet"/>
+            </trait>
+        </tree>
+    </state>
+
+    <!-- START posterior -->
+    <distribution id="posterior" spec="util.CompoundDistribution">
+      <!-- START prior -->
+        <distribution id="likelihood" spec="util.CompoundDistribution" useThreads="false">
+          <distribution id="BDSS.TreePrior" spec="bdtree.likelihood.BirthDeathSequentialSampling" tree="@TheTree" rootAge="10.0">
+              <birthRate id="BDSS.birthRate" spec="parameter.RealParameter" value="1.0"/>
+              <deathRate id="BDSS.deathRate" spec="parameter.RealParameter" value="0.5"/>
+              <rho id="BDSS.rho" spec="parameter.RealParameter" value="0.1"/>
+              <psi id="BDSS.psi" spec="parameter.RealParameter" value="1.0"/>
+          </distribution>
+      </distribution>
+      <!-- END likelihood -->
+    </distribution> <!-- END Posterior -->
+
+
+   <operator id="UniformOperator.t:landmarks" spec="Uniform" tree="@TheTree" weight="20.0"/>
+
+   <operator id="TreeNarrowOperator" spec="Exchange" tree="@TheTree" weight="15.0"/>
+
+   <operator id="TreeWideOperator" spec="Exchange" isNarrow="false" tree="@TheTree" weight="10.0"/>
+
+   <operator id="BirthDeathSubtreeSlide" spec="SubtreeSlide" tree="@TheTree" weight="5.0"/>
+
+   <operator id="BirthDeathWilsonBalding" spec="WilsonBalding" tree="@TheTree" weight="10.0"/>
+
+
+   <logger id="tracelog" fileName="SampleBDSSTreePrior.log" logEvery="2000" model="@posterior" sanitiseHeaders="true" sort="smart">
+        <log idref="posterior"/>
+        <log idref="likelihood"/>
+        <log idref="BDSS.TreePrior"/>
+        <log id="TreeHeight" spec="beast.evolution.tree.TreeStatLogger" tree="@TheTree"/>
+        <log idref="BDSS.birthRate"/>
+        <log idref="BDSS.deathRate"/>
+        <log idref="BDSS.psi"/>
+    </logger>
+
+    <logger id="screenlog" logEvery="200000">
+        <log idref="posterior"/>
+        <log id="ESS.0" spec="util.ESS" arg="@posterior"/>
+        <log idref="likelihood"/>
+    </logger>
+
+    <logger id="treelog" fileName="SampleBDSSTreePrior.trees" logEvery="2000" mode="tree">
+        <log id="TreeWithColorDataLogger" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@TheTree"/>
+    </logger>
+
+  </run>
+</beast>

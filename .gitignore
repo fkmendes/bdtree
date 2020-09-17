@@ -1,3 +1,5 @@
 *.~
 .idea/*
 bdtree.iml
+*.log
+*.state
