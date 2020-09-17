@@ -1,6 +1,6 @@
 # bdtree
 
-A central repository for birth-death models in BEAST 2
+A central repository for birth-death models in BEAST 2.
 
 **Contributors**:   Fábio K. Mendes, Rong Zhang
 
