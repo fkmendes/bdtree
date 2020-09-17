@@ -35,20 +35,12 @@ public class BirthDeathSequentialSampling extends Distribution {
 
     private double tmrca;
     private Tree tree;
-    private Tree storedTree;
 
     @Override
     public void initAndValidate() {
         super.initAndValidate();
         // get input parameters
-        birthRate = birthRateInput.get().getValue();
-        deathRate = deathRateInput.get().getValue();
-        rho = rhoInput.get().getValue();
-        if (psiInput.get() == null) {
-            psi = 0.0;
-        } else {
-            psi = psiInput.get().getValue();
-        }
+        getBDSSModelParameters();
         if (birthRate < deathRate) {
             throw new IllegalArgumentException("Birth rate is smaller than death rate.");
         }
@@ -56,26 +48,25 @@ public class BirthDeathSequentialSampling extends Distribution {
             throw new IllegalArgumentException("Sampling rate is negative.");
         }
 
+        // get sampled tree
         tree = treeInput.get();
 
+        // get root age or t_mrca
         if (rootAgeInput.get() == null) {
+            // if rootAge is not input, the tree height is sampled under a Uniform prior with soft boundaries
             lower = rootAgeLowerInput.get();
             upper = rootAgeUpperInput.get();
             if (lower >= upper) {
-                throw new IllegalArgumentException("The bounds for root age is misspecified.");
+                throw new IllegalArgumentException("The bounds for root age is not correctly specified.");
             }
         } else {
+            // if the rootAge is input, the tree height will be fixed
             tmrca = rootAgeInput.get();
             tree.getRoot().setHeight(tmrca);
         }
-
-
     }
 
-    @Override
-    public double calculateLogP() {
-        logP = 0.0;
-        // get BDSS model parameters
+    private void getBDSSModelParameters(){
         birthRate = birthRateInput.get().getValue();
         deathRate = deathRateInput.get().getValue();
         rho = rhoInput.get().getValue();
@@ -84,6 +75,14 @@ public class BirthDeathSequentialSampling extends Distribution {
         } else {
             psi = psiInput.get().getValue();
         }
+    }
+
+    @Override
+    public double calculateLogP() {
+        logP = 0.0;
+
+        // get BDSS model parameters
+        getBDSSModelParameters();
 
         // get the root age, i.e. height of the tree
         double t1 = tmrca;
@@ -191,18 +190,8 @@ public class BirthDeathSequentialSampling extends Distribution {
             // iterate internal nodes except the root
             for (Node aNode : internalNodes) {
                 if (!aNode.isRoot()) {
-                    Node child;
-                    // step1: get z^* in Equation (4) in Stadler and Yang 2013
-                    // find tip on the left
-                    for (child = aNode.getChild(1); !child.isLeaf(); child = child.getChild(0)) ;
-                    double z0 = child.getHeight();
-                    // find tip on the right
-                    for (child = aNode.getChild(0); !child.isLeaf(); child = child.getChild(1)) ;
-                    double z1 = child.getHeight();
-
-
-                    // compare the node times of the two tips
-                    double zstar = Math.max(z0, z1);
+                    // get the older sampled tips below this internal node
+                    double zstar = getzstar(aNode);
 
                     // calculate 1/g(z*)
                     zstar = 1 / (Math.exp(-c1 * zstar) * (1 - c2) + (1 + c2));
@@ -214,9 +203,6 @@ public class BirthDeathSequentialSampling extends Distribution {
                     // accumulate the log density
                     // numerator = c1 * (1 - c2 ) * exp(-c1 * t)
                     // denominator = g(t)^2 * [1/g(t1) - 1/g(z*)]
-                    if (gt1 == zstar) {
-                        return Double.NEGATIVE_INFINITY;
-                    }
                     logP += -c1 * t + Math.log(c1 * (1 - c2) / (gt * gt * (gt1 - zstar)));
                 }
             }
@@ -265,24 +251,20 @@ public class BirthDeathSequentialSampling extends Distribution {
         }
     }
 
-    @Override
-    public void store() {
+    // for Junit test
+    public double getzstar (Node aNode) {
+        Node child;
+        // step1: get z^* in Equation (4) in Stadler and Yang 2013
+        // find tip on the left
+        for (child = aNode.getChild(1); !child.isLeaf(); child = child.getChild(0)) ;
+        double z0 = child.getHeight();
+        // find tip on the right
+        for (child = aNode.getChild(0); !child.isLeaf(); child = child.getChild(1)) ;
+        double z1 = child.getHeight();
 
-        storedTree = tree;
-        super.store();
 
-
-    }
-
-    @Override
-    public void restore() {
-        Tree treeTemp;
-        treeTemp = tree;
-        tree = storedTree;
-        storedTree = treeTemp;
-
-        super.restore();
-
+        // compare the node times of the two tips
+        return Math.max(z0, z1);
     }
 
     @Override
