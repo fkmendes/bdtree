@@ -16,7 +16,7 @@
   <property name="distBDTree" location="${buildBDTree}/dist"/>
 
   <!-- unit test related paths -->
-  <property name="testReportsBDTree" location="${buildBDTree}/test-Reports"/>
+  <property name="testReportsBDTree" location="${buildBDTree}/test-reports"/>
   <property name="buildTestBDTree" location="${buildBDTree}/build-test"/>
   <property name="build-lib" location="${buildBDTree}/build-lib"/>
 
@@ -40,7 +40,6 @@
 	<pathelement path="${beast2classpath}"/> <!-- We need BEAST 2 compiled files to compile BDTree -->
   </path>
 
-
   <!-- Other -->
   <property name="BEASTmain" value="beast.app.BeastMCMC"/>
   <property name="report" value="${buildBDTree}/junitreport"/>
@@ -50,9 +49,9 @@
     <mkdir dir="${buildBDTree}"/>
     <mkdir dir="${distBDTree}"/>
     <mkdir dir="${libBDTree}"/>
-      <mkdir dir="${testReportsBDTree}"/>
-      <mkdir dir="${buildTestBDTree}"/>
-      <mkdir dir="${build-lib}"/>
+    <mkdir dir="${testReportsBDTree}"/>
+    <mkdir dir="${buildTestBDTree}"/>
+    <mkdir dir="${build-lib}"/>
 	<echo message="${ant.project.name}: ${ant.file}"/>
   </target>
 
@@ -64,9 +63,9 @@
       <delete dir="${build-lib}"/>
   </target>
 
-  <!-- Entry point: clean -> init -> compile -> release (no unit tests here) -->
-  <target name="build" depends="clean,compile,junitBDTree,release"
-          description="Clean, build and release all we need to run this package.">
+  <!-- Entry point: clean -> init -> compile -> unit tests -> release -->
+  <target name="build" depends="clean,compile,test,release"
+    description="Clean, build and release all we need to run this package.">
   </target>
 
   <!-- Compile -->
@@ -115,26 +114,27 @@
 
   </target>
 
-    <target name="junitBDTree">
-        <junit printsummary="yes" failureproperty="testFailed" showoutput="true">
+  <!-- Unit testing -->
+  <target name="test" depends="compile">
+    <junit printsummary="yes" failureproperty="testFailed" showoutput="true">
 
-            <classpath>
-                <pathelement path="${myclasspath}"/>
-                <pathelement path="${buildBDTree}" />
-                <pathelement path="${buildTestBDTree}" />
-                <fileset dir="${build-lib}" includes="*.jar"/>
-            </classpath>
+      <classpath>
+        <pathelement path="${myclasspath}"/>
+        <pathelement path="${buildBDTree}" />
+        <pathelement path="${buildTestBDTree}" />
+        <fileset dir="${build-lib}" includes="*.jar"/>
+      </classpath>
 
-            <batchtest fork="yes" todir="${testReportsBDTree}">
-                <fileset dir="${srcBDTree}">
-                    <include name="**/*Test.java"/>
-                </fileset>
-                <formatter type="plain"/>
-            </batchtest>
+      <batchtest fork="yes" todir="${testReportsBDTree}">
+        <fileset dir="${srcBDTree}">
+          <include name="**/*Test.java"/>
+        </fileset>
 
-        </junit>
+        <formatter type="plain"/>
+      </batchtest>
+    </junit>
 
-        <fail if="testFailed" status="1" message="Unit test failed."/>
-    </target>
+    <fail if="testFailed" status="1" message="Unit test failed."/>
+  </target>
 
 </project>
