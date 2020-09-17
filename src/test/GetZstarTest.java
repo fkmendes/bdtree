@@ -4,67 +4,78 @@ import beast.core.parameter.RealParameter;
 import beast.evolution.alignment.Taxon;
 import beast.evolution.alignment.TaxonSet;
 import beast.evolution.tree.TraitSet;
-import beast.util.TreeParser;
 import org.junit.Assert;
 import org.junit.Test;
 import bdtree.likelihood.BirthDeathSequentialSampling;
 import beast.evolution.tree.Node;
+import beast.evolution.tree.Tree;
+import beast.util.TreeParser;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GetZstarTest {
 
+    /*
+     * This test checks the value of Z star
+     * for all internal nodes in a non-ultrametric
+     * tree without sampled ancestors (those are
+     * not supported by this likelihood)
+     */
     @Test
     public void testingGetZStar() {
-        // (1) set up the test
-        // define a tree
+
         String treeStr = "((A:2.0,B:6.0):1,((C:2.0,D:1.0):3.0,(E:1.0,(F:2.0,G:2.0):2.0):1.0):2.0):0.0;";
 
         List<Taxon> taxaSet = new ArrayList<>();
-        taxaSet.add(0, new Taxon("A"));
-        taxaSet.add(1, new Taxon("B"));
-        taxaSet.add(2, new Taxon("C"));
-        taxaSet.add(3, new Taxon("D"));
-        taxaSet.add(4, new Taxon("E"));
-        taxaSet.add(5, new Taxon("F"));
-        taxaSet.add(6, new Taxon("G"));
+        taxaSet.add(new Taxon("A"));
+        taxaSet.add(new Taxon("B"));
+        taxaSet.add(new Taxon("C"));
+        taxaSet.add(new Taxon("D"));
+        taxaSet.add(new Taxon("E"));
+        taxaSet.add(new Taxon("F"));
+        taxaSet.add(new Taxon("G"));
         TaxonSet taxonSet = new TaxonSet();
         taxonSet.initByName("taxon", taxaSet);
 
         // specify sampled dates
         String fossilAges = "A=4.0,B=0.0,C=0.0,D=1.0,E=3.0,F=0.0,G=0.0";
-        String TraitName = "date-backward";
         TraitSet fossilSet = new TraitSet();
-        fossilSet.initByName("value", fossilAges,"traitname", TraitName, "taxa", taxonSet);
+        fossilSet.initByName("value", fossilAges,
+                "traitname", "date-backward",
+                "taxa", taxonSet);
 
-        TreeParser tree = new TreeParser();
-        tree.initByName("newick", treeStr, "taxonset", taxonSet, "trait", fossilAges, "IsLabelledNewick", true, "adjustTipHeights", false);
+        // initializing tree
+        Tree tree = new TreeParser();
+        tree.initByName("newick", treeStr,
+                "taxonset", taxonSet,
+                "trait", fossilAges,
+                "IsLabelledNewick", true,
+                "adjustTipHeights", false);
 
-        // define BDSS model
+        // initializing BDSS likelihood
         BirthDeathSequentialSampling treePrior = new BirthDeathSequentialSampling();
-        RealParameter birthRate = new RealParameter(new Double[] {1.0});
-        RealParameter deathRate = new RealParameter(new Double[] {1.0});
-        RealParameter samplingRate = new RealParameter(new Double[] {0.001});
-        RealParameter rho = new RealParameter(new Double[] {0.0});
-        treePrior.initByName("tree", tree, "birthRate", birthRate, "deathRate", deathRate, "psi", samplingRate, "rho", rho, "rootAge", 7.0);
+        RealParameter birthRate = new RealParameter(new Double[] { 1.0 });
+        RealParameter deathRate = new RealParameter(new Double[] { 1.0 });
+        RealParameter samplingRate = new RealParameter(new Double[] { 0.001 });
+        RealParameter rho = new RealParameter(new Double[] { 0.0 });
+        treePrior.initByName("tree", tree,
+                "birthRate", birthRate,
+                "deathRate", deathRate,
+                "psi", samplingRate,
+                "rho", rho,
+                "rootAge", 7.0);
 
-        // get the internal nodes of the tree
-        List<Node> internalNodes = tree.getInternalNodes();
+        // grabbing all zStars from internal nodes
+        Double[] zStars = new Double[tree.getInternalNodeCount() - 1]; // -1 b/c ignoring root
+        int j = 0;
+        for (Node i: tree.getInternalNodes()) {
+            if (!i.isRoot()) {
+                zStars[j] = treePrior.getZStar(i);
+                j++;
+            }
+        }
 
-        // (2) run the test
-        // zstar for (A, B) = max(4, 0)
-        Assert.assertEquals(4.0, treePrior.getzstar(internalNodes.get(0)), 1e-4);
-
-        // zstar for (C, D) = max(0, 1)
-        Assert.assertEquals(1.0, treePrior.getzstar(internalNodes.get(1)), 1e-4);
-
-        // zstar for (G, F) = max(0, 0)
-        Assert.assertEquals(0.0, treePrior.getzstar(internalNodes.get(2)), 1e-4);
-
-        // zstar for (F, E) = max(0, 3)
-        Assert.assertEquals(3.0, treePrior.getzstar(internalNodes.get(3)), 1e-4);
-
-        // zstar for (D, E) = max(1, 3)
-        Assert.assertEquals(3.0, treePrior.getzstar(internalNodes.get(4)), 1e-4);
+        // test!
+        Assert.assertArrayEquals(new Double[] { 4.0, 1.0, 0.0, 3.0, 3.0 }, zStars);
     }
 }

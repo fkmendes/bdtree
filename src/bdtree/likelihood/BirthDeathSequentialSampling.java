@@ -191,7 +191,7 @@ public class BirthDeathSequentialSampling extends Distribution {
             for (Node aNode : internalNodes) {
                 if (!aNode.isRoot()) {
                     // get the older sampled tips below this internal node
-                    double zstar = getzstar(aNode);
+                    double zstar = getZStar(aNode);
 
                     // calculate 1/g(z*)
                     zstar = 1 / (Math.exp(-c1 * zstar) * (1 - c2) + (1 + c2));
@@ -252,7 +252,7 @@ public class BirthDeathSequentialSampling extends Distribution {
     }
 
     // for Junit test
-    public double getzstar (Node aNode) {
+    public double getZStar(Node aNode) {
         Node child;
         // step1: get z^* in Equation (4) in Stadler and Yang 2013
         // find tip on the left
