@@ -25,7 +25,7 @@ This command invokes the *ant* tool, which executes the building instructions in
 From your shell or Terminal, type:
 
 ```
-$ /path/to/build/dist/bdtree.v0.0.1.jar /path/to/an_analysis.xml
+$ /path/to/build/dist/bdtree.v0.0.1.jar /path/to/bdtree/examples/testing/BDSSLikelihood.xml
 ```
 
 ## Models
