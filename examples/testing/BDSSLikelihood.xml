@@ -107,7 +107,7 @@
     </logger>
 
     <logger id="treelog" fileName="SampleBDSSTreePrior.trees" logEvery="2000" mode="tree">
-        <log id="TreeWithColorDataLogger" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@TheTree"/>
+        <log id="TreeWithColorDataLogger" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@TheTree" sort="false"/>
     </logger>
 
   </run>
