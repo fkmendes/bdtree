@@ -200,6 +200,10 @@ public class BirthDeathSequentialSampling extends Distribution {
                     // calculate g(t) for this internal node
                     double gt = Math.exp(-c1 * t) * (1 - c2) + (1 + c2);
 
+                    if(gt1 == zstar) {
+                        return Double.NEGATIVE_INFINITY;
+                    }
+
                     // accumulate the log density
                     // numerator = c1 * (1 - c2 ) * exp(-c1 * t)
                     // denominator = g(t)^2 * [1/g(t1) - 1/g(z*)]
