@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beast namespace="beast.evolution.speciation:beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.branchratemodel:beast.evolution.likelihood" required="BEAST v2.5.0" version="2.5">
+
+
+    <run id="calsim" spec='bdtree.simulator.BirthDeathSerialSamplingTree' rootAge="65" iterations="2001" outputFileName="SimulatedTrees.trees" logEvery="100">
+        <taxonset id="TaxonSet" spec="TaxonSet">
+            <taxon id="sp_1" spec="Taxon"/>
+            <taxon id="sp_2" spec="Taxon"/>
+            <taxon id="sp_3" spec="Taxon"/>
+            <taxon id="sp_4" spec="Taxon"/>
+            <taxon id="sp_5" spec="Taxon"/>
+            <taxon id="sp_6" spec="Taxon"/>
+            <taxon id="sp_7" spec="Taxon"/>
+            <taxon id="sp_8" spec="Taxon"/>
+            <taxon id="sp_9" spec="Taxon"/>
+            <taxon id="sp_10" spec="Taxon"/>
+            <taxon id="sp_11" spec="Taxon"/>
+            <taxon id="sp_12" spec="Taxon"/>
+            <taxon id="sp_13" spec="Taxon"/>
+            <taxon id="sp_14" spec="Taxon"/>
+            <taxon id="sp_15" spec="Taxon"/>
+            <taxon id="sp_16" spec="Taxon"/>
+            <taxon id="sp_17" spec="Taxon"/>
+            <taxon id="sp_18" spec="Taxon"/>
+            <taxon id="sp_19" spec="Taxon"/>
+        </taxonset>
+        <trait id="FossilSet" spec="beast.evolution.tree.TraitSet" traitname="date-backward">
+            sp_1=13.135,
+            sp_2=0.0285,
+            sp_3=11.95,
+            sp_4=35.55,
+            sp_5=25.615,
+            sp_6=14.785,
+            sp_7=28.55,
+            sp_8=0.0,
+            sp_9=0.0,
+            sp_10=0.0,
+            sp_11=0.0,
+            sp_12=0.0,
+            sp_13=0.0,
+            sp_14=0.0,
+            sp_15=0.0,
+            sp_16=0.0,
+            sp_17=0.0,
+            sp_18=6.65,
+            sp_19=0.0285
+            <taxa idref="TaxonSet"/>
+        </trait>
+
+        <birthRate id="BDSS.birthRate" spec="parameter.RealParameter" value="0.5"/>
+        <deathRate id="BDSS.deathRate" spec="parameter.RealParameter" value="0.3"/>
+        <rho id="BDSS.rho" spec="parameter.RealParameter" value="0.1"/>
+        <psi id="BDSS.psi" spec="parameter.RealParameter" value="0.001"/>
+    </run>
+
+    <!-- Alternatively specify the species number and sampled tip dates -->
+    <!--
+    <run id="calsim" spec='treeprior.BDSSTreeSimulator' rootAge="65" iterations="2001" outputFileName="SimulatedTrees.trees" logEvery="100"
+    speciesNr="19"
+    tipTime="sp_1=13.135,sp_2=0.0285,sp_3=11.95,sp_4=35.55,sp_5=25.615,sp_6=14.785,sp_7=28.55,sp_8=0.0,sp_9=0.0,sp_10=0.0,sp_11=0.0,sp_12=0.0,sp_13=0.0,sp_14=0.0,sp_15=0.0,sp_16=0.0,sp_17=0.0,sp_18=6.65,sp_19=0.0285">
+        <birthRate id="BDSS.birthRate" spec="parameter.RealParameter" value="0.5"/>
+        <deathRate id="BDSS.deathRate" spec="parameter.RealParameter" value="0.3"/>
+        <rho id="BDSS.rho" spec="parameter.RealParameter" value="0.1"/>
+        <psi id="BDSS.psi" spec="parameter.RealParameter" value="0.001"/>
+    </run>
+    -->
+
+</beast>
