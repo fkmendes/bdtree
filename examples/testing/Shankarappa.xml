@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" required="" version="2.6">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beast beautitemplate='Standard' beautistatus=''
+       namespace="beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.alignment:
+       beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:
+       beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:
+       beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood" required="" version="2.7">
 
 <data
 id="Shankarappa"
@@ -124,22 +129,22 @@ name="alignment">
                     </data>
 
 
-<map name="Uniform" >beast.math.distributions.Uniform</map>
-<map name="Exponential" >beast.math.distributions.Exponential</map>
-<map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
-<map name="Normal" >beast.math.distributions.Normal</map>
-<map name="Beta" >beast.math.distributions.Beta</map>
-<map name="Gamma" >beast.math.distributions.Gamma</map>
-<map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
-<map name="prior" >beast.math.distributions.Prior</map>
-<map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
-<map name="OneOnX" >beast.math.distributions.OneOnX</map>
-<map name="Dirichlet" >beast.math.distributions.Dirichlet</map>
+<map name="Uniform" >beast.base.inference.distribution.Uniform</map>
+<map name="Exponential" >beast.base.inference.distribution.Exponential</map>
+<map name="LogNormal" >beast.base.inference.distribution.LogNormalDistributionModel</map>
+<map name="Normal" >beast.base.inference.distribution.Normal</map>
+<map name="Beta" >beast.base.inference.distribution.Beta</map>
+<map name="Gamma" >beast.base.inference.distribution.Gamma</map>
+<map name="LaplaceDistribution" >beast.base.inference.distribution.LaplaceDistribution</map>
+<map name="prior" >beast.base.inference.distribution.Prior</map>
+<map name="InverseGamma" >beast.base.inference.distribution.InverseGamma</map>
+<map name="OneOnX" >beast.base.inference.distribution.OneOnX</map>
+<map name="Dirichlet" >beast.base.inference.distribution.Dirichlet</map>
 
 <run id="mcmc" spec="MCMC" chainLength="100000000">
     <state id="state" spec="State" storeEvery="5000">
-        <tree id="Tree.t:Shankarappa" spec="beast.evolution.tree.Tree" name="stateNode">
-            <trait id="dateTrait.t:Shankarappa" spec="beast.evolution.tree.TraitSet" traitname="date-forward" units="month">
+        <tree id="Tree.t:Shankarappa" spec="beast.base.evolution.tree.Tree" name="stateNode">
+            <trait id="dateTrait.t:Shankarappa" spec="beast.base.evolution.tree.TraitSet" traitname="date-forward" units="month">
                 p9c003-01=003,
 p9c003-04=003,
 p9c003-09=003,
@@ -273,14 +278,14 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
         <parameter id="freqParameter.s:Shankarappa" spec="parameter.RealParameter" dimension="4" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>
     </state>
 
-    <init id="RandomTree.t:Shankarappa" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@Tree.t:Shankarappa" taxa="@Shankarappa">
+    <init id="RandomTree.t:Shankarappa" spec="beast.base.evolution.tree.coalescent.RandomTree" estimate="false" initial="@Tree.t:Shankarappa" taxa="@Shankarappa">
         <populationModel id="ConstantPopulation0.t:Shankarappa" spec="ConstantPopulation">
             <parameter id="randomPopSize.t:Shankarappa" spec="parameter.RealParameter" name="popSize">1.0</parameter>
         </populationModel>
     </init>
 
-    <distribution id="posterior" spec="util.CompoundDistribution">
-        <distribution id="prior" spec="util.CompoundDistribution">
+    <distribution id="posterior" spec="beast.base.inference.CompoundDistribution">
+        <distribution id="prior" spec="beast.base.inference.CompoundDistribution">
             <distribution id="BDSS.TreePrior" spec="bdtree.likelihood.BirthDeathSequentialSampling" tree="@Tree.t:Shankarappa" lower="10.0" upper="200">
                 <parameter id="birthRate.t" name="birthRate" spec="parameter.RealParameter" value ="1.0"/>
                 <parameter id="deathRate.t" name="deathRate" spec="parameter.RealParameter" value="1.0"/>
@@ -288,16 +293,16 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
                 <parameter id="psi.t" name="psi" spec="parameter.RealParameter" value="0.001"/>
             </distribution>
             <prior id="birthRatePrior" name="distribution" x="@birthRate.t">
-                <distr id="LogNormal.0" spec="beast.math.distributions.LogNormalDistributionModel" S="1.0" M="1.0" meanInRealSpace="true"/>
+                <distr id="LogNormal.0" spec="beast.base.inference.distribution.LogNormalDistributionModel" S="1.0" M="1.0" meanInRealSpace="true"/>
             </prior>
             <prior id="deathRatePrior"  name="distribution" x="@deathRate.t">
-                <distr id="LogNormal.1" spec="beast.math.distributions.LogNormalDistributionModel" S="1.0" M="0.5" meanInRealSpace="true"/>
+                <distr id="LogNormal.1" spec="beast.base.inference.distribution.LogNormalDistributionModel" S="1.0" M="0.5" meanInRealSpace="true"/>
             </prior>
             <prior id="psiPrior"  name="distribution" x="@psi.t">
-                <distr id="Exponential.0" spec="beast.math.distributions.Exponential" mean="0.01"/>
+                <distr id="Exponential.0" spec="beast.base.inference.distribution.Exponential" mean="0.01"/>
             </prior>
             <prior id="rhoPrior"  name="distribution" x="@rho.t">
-                <distr id="Exponential.1" spec="beast.math.distributions.Exponential" mean="0.1"/>
+                <distr id="Exponential.1" spec="beast.base.inference.distribution.Exponential" mean="0.1"/>
             </prior>
 
             <prior id="KappaPrior.s:Shankarappa" name="distribution" x="@kappa.s:Shankarappa">
@@ -323,7 +328,7 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
                 </LogNormal>
             </prior>
         </distribution>
-        <distribution id="likelihood" spec="util.CompoundDistribution" useThreads="true">
+        <distribution id="likelihood" spec="beast.base.inference.CompoundDistribution" useThreads="true">
             <distribution id="treeLikelihood.Shankarappa" spec="ThreadedTreeLikelihood" data="@Shankarappa" tree="@Tree.t:Shankarappa">
                 <siteModel id="SiteModel.s:Shankarappa" spec="SiteModel">
                     <parameter id="mutationRate.s:Shankarappa" spec="parameter.RealParameter" estimate="false" name="mutationRate">1.0</parameter>
@@ -333,7 +338,7 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
                         <frequencies id="estimatedFreqs.s:Shankarappa" spec="Frequencies" frequencies="@freqParameter.s:Shankarappa"/>
                     </substModel>
                 </siteModel>
-                <branchRateModel id="RelaxedClock.c:Shankarappa" spec="beast.evolution.branchratemodel.UCRelaxedClockModel" clock.rate="@ucldMean.c:Shankarappa" rates="@fastRates.c:Shankarappa" tree="@Tree.t:Shankarappa">
+                <branchRateModel id="RelaxedClock.c:Shankarappa" spec="beast.base.evolution.branchratemodel.UCRelaxedClockModel" clock.rate="@ucldMean.c:Shankarappa" rates="@fastRates.c:Shankarappa" tree="@Tree.t:Shankarappa">
                     <LogNormal id="LogNormalDistributionModel.c:Shankarappa" S="@ucldStdev.c:Shankarappa" meanInRealSpace="true" name="distr">
                         <parameter id="RealParameter.3" spec="parameter.RealParameter" estimate="false" lower="0.0" name="M" upper="1.0">1.0</parameter>
                     </LogNormal>
@@ -345,15 +350,15 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
     <operator id="fastUcldStdevScaler" spec="consoperators.UcldScalerOperator" distr="@LogNormalDistributionModel.1" rates="@fastRates.c:Shankarappa" scaleFactor="0.5" stdev="@ucldStdev.c:Shankarappa" weight="5.0"/>
 
     <operator id="FastInternalnodesOperator" spec="consoperators.InConstantDistanceOperator" clockModel="@RelaxedClock.c:Shankarappa" rates="@fastRates.c:Shankarappa" tree="@Tree.t:Shankarappa" twindowSize="0.02" weight="20.0">
-        <kernel id="KernelDistribution$Bactrian.0" spec="KernelDistribution$Bactrian"/>
+        <kernel id="KernelDistribution$Bactrian.0" spec="beast.base.inference.operator.kernel.KernelDistribution$Bactrian"/>
     </operator>
 
     <operator id="FastRootOperator1" spec="consoperators.SimpleDistance" clockModel="@RelaxedClock.c:Shankarappa" rates="@fastRates.c:Shankarappa" tree="@Tree.t:Shankarappa" twindowSize="0.02" weight="1.0">
-        <kernel id="KernelDistribution$Bactrian.1" spec="KernelDistribution$Bactrian"/>
+        <kernel id="KernelDistribution$Bactrian.1" spec="beast.base.inference.operator.kernel.KernelDistribution$Bactrian"/>
     </operator>
 
     <operator id="FastRootOperator2" spec="consoperators.SmallPulley" clockModel="@RelaxedClock.c:Shankarappa" dwindowSize="0.02" rates="@fastRates.c:Shankarappa" tree="@Tree.t:Shankarappa" weight="1.0">
-        <kernel id="KernelDistribution$Bactrian.2" spec="KernelDistribution$Bactrian"/>
+        <kernel id="KernelDistribution$Bactrian.2" spec="beast.base.inference.operator.kernel.KernelDistribution$Bactrian"/>
     </operator>
 
     <operator id="FastRootOperator3" spec="consoperators.BigPulley" dwindowSize="0.002" rates="@fastRates.c:Shankarappa" tree="@Tree.t:Shankarappa" twindowSize="0.02" weight="0.1"/>
@@ -397,7 +402,7 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
         <log idref="likelihood"/>
         <log idref="prior"/>
         <log idref="treeLikelihood.Shankarappa"/>
-        <log id="TreeHeight.t:Shankarappa" spec="beast.evolution.tree.TreeStatLogger" tree="@Tree.t:Shankarappa"/>
+        <log id="TreeHeight.t:Shankarappa" spec="beast.base.evolution.tree.TreeStatLogger" tree="@Tree.t:Shankarappa"/>
         <log idref="birthRate.t"/>
         <log idref="deathRate.t"/>
         <log idref="psi.t"/>
@@ -405,7 +410,7 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
         <log idref="kappa.s:Shankarappa"/>
         <log idref="ucldMean.c:Shankarappa"/>
         <log idref="ucldStdev.c:Shankarappa"/>
-        <log id="rate.c:Shankarappa" spec="beast.evolution.branchratemodel.RateStatistic" branchratemodel="@RelaxedClock.c:Shankarappa" tree="@Tree.t:Shankarappa"/>
+        <log id="rate.c:Shankarappa" spec="beast.base.evolution.RateStatistic" branchratemodel="@RelaxedClock.c:Shankarappa" tree="@Tree.t:Shankarappa"/>
         <log idref="freqParameter.s:Shankarappa"/>
     </logger>
 
@@ -416,7 +421,7 @@ p9c129-04=129                <taxa id="TaxonSet.Shankarappa" spec="TaxonSet">
     </logger>
 
     <logger id="treelog.t:Shankarappa" spec="Logger" fileName="Shankarappa_cons.trees" logEvery="10000" mode="tree">
-        <log id="TreeWithMetaDataLogger.t:Shankarappa" spec="beast.evolution.tree.TreeWithMetaDataLogger" branchratemodel="@RelaxedClock.c:Shankarappa" tree="@Tree.t:Shankarappa" sort="false"/>
+        <log id="TreeWithMetaDataLogger.t:Shankarappa" spec="beast.base.evolution.TreeWithMetaDataLogger" branchratemodel="@RelaxedClock.c:Shankarappa" tree="@Tree.t:Shankarappa" sort="false"/>
     </logger>
 
 </run>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beast namespace="beast.evolution.speciation:beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.branchratemodel:beast.evolution.likelihood" required="BEAST v2.5.0" version="2.5">
+<beast namespace="beast.base.evolution.speciation:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.alignment:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.branchratemodel:beast.base.evolution.likelihood" required="BEAST v2.7.0" version="2.7">
 
-  <map name="Uniform" >beast.math.distributions.Uniform</map>
-  <map name="Exponential" >beast.math.distributions.Exponential</map>
-  <map name="LogNormal" >beast.math.distributions.LogNormalDistributionModel</map>
-  <map name="Normal" >beast.math.distributions.Normal</map>
-  <map name="Beta" >beast.math.distributions.Beta</map>
-  <map name="Gamma" >beast.math.distributions.Gamma</map>
-  <map name="LaplaceDistribution" >beast.math.distributions.LaplaceDistribution</map>
-  <map name="prior" >beast.math.distributions.Prior</map>
-  <map name="InverseGamma" >beast.math.distributions.InverseGamma</map>
-  <map name="OneOnX" >beast.math.distributions.OneOnX</map>
-  <map name="Dirichlet" >beast.math.distributions.Dirichlet</map>
+  <map name="Uniform" >beast.base.inference.distribution.Uniform</map>
+  <map name="Exponential" >beast.base.inference.distribution.Exponential</map>
+  <map name="LogNormal" >beast.base.inference.distribution.LogNormalDistributionModel</map>
+  <map name="Normal" >beast.base.inference.distribution.Normal</map>
+  <map name="Beta" >beast.base.inference.distribution.Beta</map>
+  <map name="Gamma" >beast.base.inference.distribution.Gamma</map>
+  <map name="LaplaceDistribution" >beast.base.inference.distribution.LaplaceDistribution</map>
+  <map name="prior" >beast.base.inference.distribution.Prior</map>
+  <map name="InverseGamma" >beast.base.inference.distribution.InverseGamma</map>
+  <map name="OneOnX" >beast.base.inference.distribution.OneOnX</map>
+  <map name="Dirichlet" >beast.base.inference.distribution.Dirichlet</map>
 
     <data id="speciesNames" spec="Alignment" name="alignment">
         <sequence id="seq_1" spec="Sequence" taxon="sp_1" totalcount="4" value="?"/>
@@ -27,7 +27,7 @@
 
     </data>
 
-    <init id="RandomTree" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@TheTree" taxa="@speciesNames">
+    <init id="RandomTree" spec="beast.base.evolution.tree.coalescent.RandomTree" estimate="false" initial="@TheTree" taxa="@speciesNames">
         <populationModel id="ConstantPopulation" spec="ConstantPopulation">
             <parameter id="randomPopSize" spec="parameter.RealParameter" name="popSize">1.0</parameter>
         </populationModel>
@@ -35,7 +35,7 @@
 
   <run id="mcmc" spec="MCMC" chainLength="50000000">
     <state id="state" storeEvery="5000">
-        <tree id="TheTree" spec="beast.evolution.tree.Tree" name="stateNode">
+        <tree id="TheTree" spec="beast.base.evolution.tree.Tree" name="stateNode">
             <taxonset id="TaxonSet" spec="TaxonSet">
                 <taxon id="sp_1" spec="Taxon"/>
                 <taxon id="sp_2" spec="Taxon"/>
@@ -48,7 +48,7 @@
                 <taxon id="sp_9" spec="Taxon"/>
                 <taxon id="sp_10" spec="Taxon"/>
             </taxonset>
-            <trait id="FossilSet" spec="beast.evolution.tree.TraitSet" traitname="date-backward">
+            <trait id="FossilSet" spec="beast.base.evolution.tree.TraitSet" traitname="date-backward">
                 sp_1=0.0,
                 sp_2=1.0,
                 sp_3=2.0,
@@ -65,9 +65,9 @@
     </state>
 
     <!-- START posterior -->
-    <distribution id="posterior" spec="util.CompoundDistribution">
+    <distribution id="posterior" spec="beast.base.inference.CompoundDistribution">
       <!-- START prior -->
-        <distribution id="likelihood" spec="util.CompoundDistribution" useThreads="false">
+        <distribution id="likelihood" spec="beast.base.inference.CompoundDistribution" useThreads="false">
           <distribution id="BDSS.TreePrior" spec="bdtree.likelihood.BirthDeathSequentialSampling" tree="@TheTree" rootAge="10.0">
               <birthRate id="BDSS.birthRate" spec="parameter.RealParameter" value="1.0"/>
               <deathRate id="BDSS.deathRate" spec="parameter.RealParameter" value="0.5"/>
@@ -94,7 +94,7 @@
         <log idref="posterior"/>
         <log idref="likelihood"/>
         <log idref="BDSS.TreePrior"/>
-        <log id="TreeHeight" spec="beast.evolution.tree.TreeStatLogger" tree="@TheTree"/>
+        <log id="TreeHeight" spec="beast.base.evolution.tree.TreeStatLogger" tree="@TheTree"/>
         <log idref="BDSS.birthRate"/>
         <log idref="BDSS.deathRate"/>
         <log idref="BDSS.psi"/>
@@ -107,7 +107,7 @@
     </logger>
 
     <logger id="treelog" fileName="SampleBDSSTreePrior.trees" logEvery="2000" mode="tree">
-        <log id="TreeWithColorDataLogger" spec="beast.evolution.tree.TreeWithMetaDataLogger" tree="@TheTree" sort="false"/>
+        <log id="TreeWithColorDataLogger" spec="beast.base.evolution.TreeWithMetaDataLogger" tree="@TheTree" sort="false"/>
     </logger>
 
   </run>
