@@ -20,14 +20,6 @@ $ ant
 
 This command invokes the *ant* tool, which executes the building instructions inside *build.xml*. The new *bdtree* .jar file will be put inside *build/dist/*.
 
-## Running an analysis with *bdtree*
-
-From your shell or Terminal, type:
-
-```
-$ /path/to/bdtree/build/dist/bdtree.v0.0.1.jar /path/to/bdtree/examples/testing/BDSSLikelihood.xml
-```
-
 ## Models
 
 Below we list all the models contained within *bdtree*:
