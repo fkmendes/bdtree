@@ -107,8 +107,10 @@
   <!-- Jar release -->
   <target name="release" depends="compile">
 
+      <mkdir dir="${buildBDTree}/lib"/>
+
 	<!-- Put everything in bdtree.vSomeVersion.jar -->
-    <jar jarfile="${distBDTree}/${binName}.v${projVersion}.jar">
+    <jar jarfile="${distBDTree}/lib/${binName}.v${projVersion}.jar">
 		<manifest>
 			<attribute name="Built-By" value="${user.name}"/>
 			<attribute name="Main-Class" value="${BEASTmain}"/>
@@ -136,7 +138,7 @@
 <!--        <zipgroupfileset dir="${libBeast2}" includes="antlr-runtime-*.jar"/>-->
     </jar>
 
-      <jar jarfile="${distBDTree}/${binName}.v${projVersion}.src.jar" basedir="${src}" />
+      <jar jarfile="${distBDTree}/lib/${binName}.v${projVersion}.src.jar" basedir="${src}" />
 
       <copy file="version.xml" todir="${distBDTree}" />
 
