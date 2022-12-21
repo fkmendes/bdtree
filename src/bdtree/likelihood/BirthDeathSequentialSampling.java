@@ -1,12 +1,14 @@
 package bdtree.likelihood;
 
-import beast.core.Description;
-import beast.core.Input;
-import beast.core.State;
-import beast.core.parameter.RealParameter;
-import beast.core.Distribution;
-import beast.evolution.tree.Node;
-import beast.evolution.tree.Tree;
+import beast.base.core.Description;
+import beast.base.core.Input;
+import beast.base.inference.State;
+import beast.base.inference.parameter.RealParameter;
+import beast.base.inference.Distribution;
+import beast.base.evolution.tree.Node;
+import beast.base.evolution.tree.Tree;
+import beast.base.inference.util.InputUtil;
+
 import java.util.List;
 import java.util.Random;
 
@@ -273,7 +275,9 @@ public class BirthDeathSequentialSampling extends Distribution {
 
     @Override
     protected boolean requiresRecalculation() {
-        return super.requiresRecalculation() || birthRateInput.get().somethingIsDirty() || deathRateInput.isDirty() || psiInput.isDirty() || rhoInput.isDirty();
+        return super.requiresRecalculation() || birthRateInput.get().somethingIsDirty() ||
+                InputUtil.isDirty(deathRateInput) || InputUtil.isDirty(psiInput) ||
+                InputUtil.isDirty(rhoInput);
     }
 
     @Override

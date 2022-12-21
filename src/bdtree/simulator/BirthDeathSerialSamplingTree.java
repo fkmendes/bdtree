@@ -1,15 +1,20 @@
 package bdtree.simulator;
 
-import beast.core.*;
-import beast.core.parameter.RealParameter;
-import beast.core.util.Log;
-import beast.evolution.alignment.TaxonSet;
-import beast.evolution.alignment.Taxon;
-import beast.evolution.tree.Node;
-import beast.evolution.tree.TraitSet;
-import beast.evolution.tree.Tree;
-import beast.util.*;
-import java.io.*;
+import beast.base.core.Citation;
+import beast.base.core.Description;
+import beast.base.core.Input;
+import beast.base.core.Log;
+import beast.base.evolution.alignment.Taxon;
+import beast.base.evolution.alignment.TaxonSet;
+import beast.base.evolution.tree.Node;
+import beast.base.evolution.tree.TraitSet;
+import beast.base.evolution.tree.Tree;
+import beast.base.inference.parameter.RealParameter;
+import beast.base.parser.XMLParserException;
+import beast.base.util.Randomizer;
+
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +23,7 @@ import java.util.List;
         "  sequentially sampled tips. Systematic biology, 62(5), 674-688", DOI = "https://doi.org/10.1093/sysbio/syt030",
         year = 2012, firstAuthorSurname = "Stadler")
 
-public class BirthDeathSerialSamplingTree extends beast.core.Runnable {
+public class BirthDeathSerialSamplingTree extends beast.base.inference.Runnable {
     final public Input<TraitSet> traitSetInput = new Input<>("trait", "node times of sampled tips");
     final public Input<TaxonSet> taxonsetInput = new Input<>("taxonset", "set of taxa that correspond to the leafs in the tree");
     final public Input<Integer> speciesNrInput = new Input<>("speciesNr", "number of species in the simulated tree");
@@ -199,7 +204,11 @@ public class BirthDeathSerialSamplingTree extends beast.core.Runnable {
                     setHeight(height);
                    }
              */
-            Node newNode = new Node(node.getID(), node.getHeight());
+            // no such constructor in beast 2.7
+//            Node newNode = new Node(node.getID(), node.getHeight());
+            Node newNode = new Node(node.getID());
+            newNode.setHeight(node.getHeight());
+
             newNode.setNr(k);
             activeNodes.add(newNode);
             k += 1;

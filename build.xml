@@ -5,8 +5,8 @@
 
   <!-- ########## PROPERTIES  ########## -->
   <property name="binName" value="bdtree"/>
-  <property name="projName" value="bdtree"/>
-  <property name="projVersion" value="0.0.1"/>
+<!--  <property name="projName" value="bdtree"/>-->
+<!--  <property name="projVersion" value="0.0.1"/>-->
   
   <!-- bdtree-related paths -->
   <property name="srcBDTree" location="src"/>
@@ -28,14 +28,15 @@
 
     <import file="${beast2path}/build.xml"/>
 
-  <!-- BEAST 2 currently uses Java 1.8 -->
-  <property name="sourceVersion" value="1.8"/>
-  <property name="targetVersion" value="1.8"/>
+  <!-- BEAST 2 currently uses Zulu JDK 17 -->
+  <property name="sourceVersion" value="17"/>
+  <property name="targetVersion" value="17"/>
 
   <!-- classpath -->
   <path id="classpath">
 	<pathelement path="${buildBDTree}"/>
       <fileset dir="${libBeast2}" includes="*.jar"/>
+      <fileset dir="${libBeast2}/junit" includes="*.jar"/>
       <fileset dir="${libBDTree}" includes="*.jar"/>
 	<pathelement path="${beast2classpath}"/> <!-- We need BEAST 2 compiled files to compile BDTree -->
   </path>
@@ -53,6 +54,20 @@
     <mkdir dir="${buildTestBDTree}"/>
     <mkdir dir="${build-lib}"/>
 	<echo message="${ant.project.name}: ${ant.file}"/>
+
+      <available file="version.xml" property="versionAvailable"/>
+      <fail unless="versionAvailable">
+          ** Required file version.xml does not exist. **
+          If this is a new project, run "ant skeleton" from
+          the command line to create the files required for
+          your BEAST 2 package.
+      </fail>
+
+      <!-- Read package name and version from xml file -->
+      <xmlproperty file="version.xml" prefix="fromVersionFile" />
+      <property name="projName" value="${fromVersionFile.package(name)}" />
+      <property name="projVersion" value="${fromVersionFile.package(version)}" />
+
   </target>
 
   <target name="clean">
@@ -102,23 +117,31 @@
         <!-- Add source and compiled files from BDTree -->
 		<fileset dir="${buildBDTree}">
 			<include name="**/*.class" />
-			<include name="**/*.java" />
+            <exclude name="test/**" />
+<!--			<include name="**/*.java" />-->
 		</fileset>
 
         <!-- Add compiled files from beast2 (so we can actually run things) -->
-        <fileset dir="${beast2classpath}">
-            <include name="beast/**/*.class"/>
-            <include name="org/**/*.class"/>
-        </fileset>
+<!--        <fileset dir="${beast2classpath}">-->
+<!--            <include name="beast/**/*.class"/>-->
+<!--            <include name="org/**/*.class"/>-->
+<!--        </fileset>-->
 
         <!-- Bundles executables and a bunch of other files from these libs -->
         <!-- e.g., it creates /org/antlr/v4/runtime/a.class -->
-        <zipgroupfileset dir="${libBeast2}" includes="beagle.jar" />
-        <zipgroupfileset dir="${libBeast2}" includes="colt.jar" />
-        <zipgroupfileset dir="${libBeast2}" includes="commons-math3-3.1.1.jar" />
-        <zipgroupfileset dir="${libBeast2}" includes="jam.jar" />
-        <zipgroupfileset dir="${libBeast2}" includes="antlr-runtime-4.7.jar"/>
+<!--        <zipgroupfileset dir="${libBeast2}" includes="beagle.jar" />-->
+<!--        <zipgroupfileset dir="${libBeast2}" includes="colt.jar" />-->
+<!--        <zipgroupfileset dir="${libBeast2}" includes="commons-math3-*.jar" />-->
+<!--        <zipgroupfileset dir="${libBeast2}" includes="jam.jar" />-->
+<!--        <zipgroupfileset dir="${libBeast2}" includes="antlr-runtime-*.jar"/>-->
     </jar>
+
+      <jar jarfile="${distBDTree}/${binName}.v${projVersion}.src.jar" basedir="${src}" />
+
+      <copy file="version.xml" todir="${distBDTree}" />
+
+      <zip destfile="${binName}.v${projVersion}.zip" basedir="${distBDTree}" />
+      <echo>** Package ${binName}.v${projVersion}.zip created successfuly! **</echo>
 
   </target>
 
