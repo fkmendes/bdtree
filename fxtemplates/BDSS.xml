@@ -1,0 +1,81 @@
+<beast version='2.0'
+       namespace='beast.app.beauti:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.math.distributions'>
+
+    <!-- tree priors -->
+    <mergewith point='treePriorTemplates'>
+
+        <subtemplate id='BirthDeathSequentialSamplingModel' class='bdtree.likelihood.BirthDeathSequentialSampling' mainid='BDSS.t:$(n)'
+                     suppressInputs='bdtree.likelihood.BirthDeathSequentialSampling.deathRate,
+	sbdtree.likelihood.BirthDeathSequentialSampling.birthRate,
+	bdtree.likelihood.BirthDeathSequentialSampling.deathRate,
+	bdtree.likelihood.BirthDeathSequentialSampling.rho,
+	bdtree.likelihood.BirthDeathSequentialSampling.psi,
+	bdtree.likelihood.BirthDeathSequentialSampling.tree>
+            <![CDATA[
+    <!-- Birth Death Sequential Sampling model-->
+    <BDSSModel spec="sa.evolution.speciation.SABirthDeathModel" id="BDSS.t:$(n)" tree="@Tree.t:$(n)">
+        <parameter id="birthRateBDSS.t:$(n)" name="birthRate" spec="parameter.RealParameter" value ="1.0" lower="0.0">
+        <parameter id="deathRateBDSS.t:$(n)" name="deathRate" spec="parameter.RealParameter" value="1.0" lower="0.0"/>
+        <parameter id="rhoBDSS.t:$(n)" name="rho" spec="parameter.RealParameter" value="0.1" lower="0.0" upper="1.0"/>
+        <parameter id="psiBDSS.t:$(n)" name="psi" spec="parameter.RealParameter" value="0.001" lower="0.0" upper="1.0"/>
+	</BDSSModel>
+
+	<distribution id="birthRatePriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@birthRateBDSS.t:$(n)">
+		<distr id="LogNormal.0" spec="beast.base.inference.distribution.LogNormalDistributionModel" S="1.0" M="1.0" meanInRealSpace="true"/>
+	</distribution>
+	<distribution id="deathRatePriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@deathRateBDSS.t:$(n)">
+		<distr id="LogNormal.1" spec="beast.base.inference.distribution.LogNormalDistributionModel" S="1.0" M="0.5" meanInRealSpace="true"/>
+	</distribution>
+	<distribution id="rhoPriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@rhoBDSS.t:$(n)">
+		<distr id="Exponential.1" spec="beast.base.inference.distribution.Exponential" mean="0.1"/>
+	</distribution>
+	<distribution id="psiPriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@psiBDSS.t:$(n)">
+		  <distr id="Exponential.0" spec="beast.base.inference.distribution.Exponential" mean="0.01"/>
+	</distribution>
+
+    <operator id="BirthRateScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@birthRateBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+    <operator id="DeathRateScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@deathRateBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+    <operator id="RhoScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@rhoBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+    <operator id="PsiScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@psiBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+
+    <!-- operators for BDSS trees -->
+    <operator id="TreeScalerBDSS.t:$(n)" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:$(n)" weight="5.0"/>
+	<operator id="TreeRootScalerBDSS.t:$(n)" spec="ScaleOperator" rootOnly="true" scaleFactor="0.5" tree="@Tree.t:$(n)" weight="5.0"/>
+	<operator id="TreeUniformOperatorBDSS.t:$(n)" spec="Uniform" tree="@Tree.t:$(n)" weight="20.0"/>
+    <operator id="TreeSubtreeSlideBDSS.t:$(n)" spec="SubtreeSlide" tree="@Tree.t:$(n)" weight="15.0"/>
+    <operator id="TreeNarrow.BDSS.t:$(n)" spec="Exchange" tree="@Tree.t:$(n)" weight="15.0"/>
+    <operator id="TreeWideBDSS.t:$(n)" spec="Exchange" isNarrow="false" tree="@Tree.t:$(n)" weight="5.0"/>
+    <operator id="TreeWilsonBaldingBDSS.t:$(n)" spec="WilsonBalding" tree="@Tree.t:$(n)" weight="5.0"/>
+
+]]>
+            <connect srcID='BDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and inlikelihood(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+
+            <connect srcID='birthRatePriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and birthRateDSS.t:$(n)/estimate=true'>prior on birthRateBDSS.t:$(n)</connect>
+            <connect srcID='deathRatePriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and deathRateBDSS.t:$(n)/estimate=true'>prior on deathRateBDSS.t:$(n)</connect>
+            <connect srcID='rhoPriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and rhoBDSS.t:$(n)/estimate=true'>prior on rBDSS.t:$(n)</connect>
+            <connect srcID='psiPriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and psiBDSS.t:$(n)/estimate=true'>prior on psiBDSS.t:$(n)</connect>
+
+            <connect srcID='birthRateBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and birthRateBDSS.t:$(n)/estimate=true'/>
+            <connect srcID='deathRateBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and deathRateBDSS.t:$(n)/estimate=true'/>
+            <connect srcID='rhoBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and rhoBDSS.t:$(n)/estimate=true'/>
+            <connect srcID='psiBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and psiBDSS.t:$(n)/estimate=true'/>
+
+            <connect srcID='TreeScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='TreeRootScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='TreeUniformOperatorBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='TreeSubtreeSlideBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='TreeNarrow.BDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='TreeWideBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+            <connect srcID='TreeWilsonBaldingBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
+
+            <connect srcID='BDSS.t:$(n)' targetID='tracelog' inputName='log' if='inposterior(BDSS.t:$(n))'/>
+            <plate var='p' range='birthRate,deathRate,rho,psi'>
+                <connect srcID='$(p)BDSS.t:$(n)' targetID='state' inputName='stateNode' if='inposterior(BDSS.t:$(n)) and $(p)BDSS.t:$(n)/estimate=true'/>
+                <connect srcID='$(p)BDSS.t:$(n)' targetID='tracelog' inputName='log' if='inposterior(BDSS.t:$(n)) and $(p)BDSS.t:$(n)/estimate=true'/>
+            </plate>
+            <connect srcID='BDSS.t:$(n)' targetID='tracelog' inputName='log' if='inposterior(BDSS.t:$(n))'/>
+
+        </subtemplate>
+    </mergewith>
+
+</beast>
