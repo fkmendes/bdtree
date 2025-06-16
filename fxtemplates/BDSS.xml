@@ -4,12 +4,15 @@
     <!-- tree priors -->
     <mergewith point='treePriorTemplates'>
 
-        <subtemplate id='BirthDeathSequentialSamplingModel' class='bdtree.likelihood.BirthDeathSequentialSampling' mainid='BDSS.t:$(n)'
+        <subtemplate id='BirthDeathSequentialSamplingModel' class='beast.base.evolution.speciation.CalibratedYuleModel' mainid='BDSS.t:$(n)'
                      suppressInputs='bdtree.likelihood.BirthDeathSequentialSampling.birthRate,
 	bdtree.likelihood.BirthDeathSequentialSampling.deathRate,
 	bdtree.likelihood.BirthDeathSequentialSampling.rho,
 	bdtree.likelihood.BirthDeathSequentialSampling.psi,
-	bdtree.likelihood.BirthDeathSequentialSampling.tree'>
+	bdtree.likelihood.BirthDeathSequentialSampling.tree,
+	bdtree.likelihood.BirthDeathSequentialSampling.lower,
+	bdtree.likelihood.BirthDeathSequentialSampling.upper,
+	bdtree.likelihood.BirthDeathSequentialSampling.rootAge'>
             <![CDATA[
     <!-- Birth Death Sequential Sampling model-->
     <BDSSModel spec="bdtree.likelihood.BirthDeathSequentialSampling" id="BDSS.t:$(n)" tree="@Tree.t:$(n)">
@@ -20,16 +23,18 @@
 	</BDSSModel>
 
 	<distribution id="birthRatePriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@birthRateBDSS.t:$(n)">
-		<distr id="LogNormal.0" spec="beast.base.inference.distribution.LogNormalDistributionModel" S="1.0" M="1.0" meanInRealSpace="true"/>
+        <distr id="Exponential.2" spec="beast.base.inference.distribution.Exponential" mean="0.5"/>
 	</distribution>
+
 	<distribution id="deathRatePriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@deathRateBDSS.t:$(n)">
-		<distr id="LogNormal.1" spec="beast.base.inference.distribution.LogNormalDistributionModel" S="1.0" M="0.5" meanInRealSpace="true"/>
+		 <distr id="Exponential.3" spec="beast.base.inference.distribution.Exponential" mean="0.01"/>
 	</distribution>
+
 	<distribution id="rhoPriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@rhoBDSS.t:$(n)">
-		<distr id="Exponential.1" spec="beast.base.inference.distribution.Exponential" mean="0.1"/>
+		<distr id="Exponential.0" spec="beast.base.inference.distribution.Exponential" mean="0.1"/>
 	</distribution>
 	<distribution id="psiPriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@psiBDSS.t:$(n)">
-		  <distr id="Exponential.0" spec="beast.base.inference.distribution.Exponential" mean="0.01"/>
+		  <distr id="Exponential.1" spec="beast.base.inference.distribution.Exponential" mean="0.01"/>
 	</distribution>
 
     <operator id="BirthRateScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@birthRateBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
@@ -49,15 +54,15 @@
 ]]>
             <connect srcID='BDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and inlikelihood(Tree.t:$(n)) and Tree.t:$(n)/estimate=true'/>
 
-            <connect srcID='birthRatePriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and birthRateDSS.t:$(n)/estimate=true'>prior on birthRateBDSS.t:$(n)</connect>
+            <connect srcID='birthRatePriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and birthRateBDSS.t:$(n)/estimate=true'>prior on birthRateBDSS.t:$(n)</connect>
             <connect srcID='deathRatePriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and deathRateBDSS.t:$(n)/estimate=true'>prior on deathRateBDSS.t:$(n)</connect>
             <connect srcID='rhoPriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and rhoBDSS.t:$(n)/estimate=true'>prior on rhoBDSS.t:$(n)</connect>
             <connect srcID='psiPriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and psiBDSS.t:$(n)/estimate=true'>prior on psiBDSS.t:$(n)</connect>
 
-            <connect srcID='birthRateBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and birthRateBDSS.t:$(n)/estimate=true'/>
-            <connect srcID='deathRateBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and deathRateBDSS.t:$(n)/estimate=true'/>
-            <connect srcID='rhoBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and rhoBDSS.t:$(n)/estimate=true'/>
-            <connect srcID='psiBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and psiBDSS.t:$(n)/estimate=true'/>
+            <connect srcID='BirthRateScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and birthRateBDSS.t:$(n)/estimate=true'/>
+            <connect srcID='DeathRateScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and deathRateBDSS.t:$(n)/estimate=true'/>
+            <connect srcID='RhoScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and rhoBDSS.t:$(n)/estimate=true'/>
+            <connect srcID='PsiScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and psiBDSS.t:$(n)/estimate=true'/>
 
             <connect srcID='TreeScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
             <connect srcID='TreeRootScalerBDSS.t:$(n)' targetID='mcmc' inputName='operator' if='inposterior(BDSS.t:$(n)) and Tree.t:$(n)/estimate=true'/>
