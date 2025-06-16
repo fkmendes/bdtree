@@ -10,11 +10,11 @@
 	bdtree.likelihood.BirthDeathSequentialSampling.deathRate,
 	bdtree.likelihood.BirthDeathSequentialSampling.rho,
 	bdtree.likelihood.BirthDeathSequentialSampling.psi,
-	bdtree.likelihood.BirthDeathSequentialSampling.tree>
+	bdtree.likelihood.BirthDeathSequentialSampling.tree'>
             <![CDATA[
     <!-- Birth Death Sequential Sampling model-->
-    <BDSSModel spec="sa.evolution.speciation.SABirthDeathModel" id="BDSS.t:$(n)" tree="@Tree.t:$(n)">
-        <parameter id="birthRateBDSS.t:$(n)" name="birthRate" spec="parameter.RealParameter" value ="1.0" lower="0.0">
+    <BDSSModel spec="bdtree.likelihood.BirthDeathSequentialSampling" id="BDSS.t:$(n)" tree="@Tree.t:$(n)">
+        <parameter id="birthRateBDSS.t:$(n)" name="birthRate" spec="parameter.RealParameter" value ="1.0" lower="0.0"/>
         <parameter id="deathRateBDSS.t:$(n)" name="deathRate" spec="parameter.RealParameter" value="1.0" lower="0.0"/>
         <parameter id="rhoBDSS.t:$(n)" name="rho" spec="parameter.RealParameter" value="0.1" lower="0.0" upper="1.0"/>
         <parameter id="psiBDSS.t:$(n)" name="psi" spec="parameter.RealParameter" value="0.001" lower="0.0" upper="1.0"/>
@@ -52,7 +52,7 @@
 
             <connect srcID='birthRatePriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and birthRateDSS.t:$(n)/estimate=true'>prior on birthRateBDSS.t:$(n)</connect>
             <connect srcID='deathRatePriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and deathRateBDSS.t:$(n)/estimate=true'>prior on deathRateBDSS.t:$(n)</connect>
-            <connect srcID='rhoPriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and rhoBDSS.t:$(n)/estimate=true'>prior on rBDSS.t:$(n)</connect>
+            <connect srcID='rhoPriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and rhoBDSS.t:$(n)/estimate=true'>prior on rhoBDSS.t:$(n)</connect>
             <connect srcID='psiPriorBDSS.t:$(n)' targetID='prior' inputName='distribution' if='inposterior(BDSS.t:$(n)) and psiBDSS.t:$(n)/estimate=true'>prior on psiBDSS.t:$(n)</connect>
 
             <connect srcID='birthRateBDSS.t:$(n)' targetID='mcmc' inputName='operator'     if='inposterior(BDSS.t:$(n)) and birthRateBDSS.t:$(n)/estimate=true'/>

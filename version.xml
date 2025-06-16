@@ -1,4 +1,4 @@
-<package name='bdtree' version='0.0.1'>
+<package name='bdtree' version='0.0.2'>
   <depends on='BEAST.base' atleast='2.7.3'/>
   <depends on='BEAST.app' atleast='2.7.3'/>
 

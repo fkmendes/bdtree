@@ -6,7 +6,7 @@
   <!-- ########## PROPERTIES  ########## -->
   <property name="binName" value="bdtree"/>
 <!--  <property name="projName" value="bdtree"/>-->
-<!--  <property name="projVersion" value="0.0.1"/>-->
+<!--  <property name="projVersion" value="0.0.2"/>-->
   
   <!-- bdtree-related paths -->
   <property name="srcBDTree" location="src"/>
@@ -14,6 +14,7 @@
   <property name="libBDTree" location="lib"/>
   <property name="release_dir" location="release"/>
   <property name="distBDTree" location="${buildBDTree}/dist"/>
+  <property name="fxtemplates" location="fxtemplates"/>
 
   <!-- unit test related paths -->
   <property name="testReportsBDTree" location="${buildBDTree}/test-reports"/>
@@ -141,6 +142,11 @@
       <jar jarfile="${distBDTree}/lib/${binName}.v${projVersion}.src.jar" basedir="${src}" />
 
       <copy file="version.xml" todir="${distBDTree}" />
+      
+       <mkdir dir="${distBDTree}/fxtemplates" />
+        <copy todir="${distBDTree}/fxtemplates">
+            <fileset dir="${fxtemplates}" includes="*.xml" />
+        </copy>
 
       <zip destfile="${binName}.v${projVersion}.zip" basedir="${distBDTree}" />
       <echo>** Package ${binName}.v${projVersion}.zip created successfuly! **</echo>

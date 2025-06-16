@@ -48,7 +48,7 @@ public class GetZstarTest {
         Tree tree = new TreeParser();
         tree.initByName("newick", treeStr,
                 "taxonset", taxonSet,
-                "trait", fossilAges,
+                "trait", fossilSet,
                 "IsLabelledNewick", true,
                 "adjustTipHeights", false);
 
