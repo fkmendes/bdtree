@@ -5,8 +5,7 @@
     <mergewith point='treePriorTemplates'>
 
         <subtemplate id='BirthDeathSequentialSamplingModel' class='bdtree.likelihood.BirthDeathSequentialSampling' mainid='BDSS.t:$(n)'
-                     suppressInputs='bdtree.likelihood.BirthDeathSequentialSampling.deathRate,
-	sbdtree.likelihood.BirthDeathSequentialSampling.birthRate,
+                     suppressInputs='bdtree.likelihood.BirthDeathSequentialSampling.birthRate,
 	bdtree.likelihood.BirthDeathSequentialSampling.deathRate,
 	bdtree.likelihood.BirthDeathSequentialSampling.rho,
 	bdtree.likelihood.BirthDeathSequentialSampling.psi,
