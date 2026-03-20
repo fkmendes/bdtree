@@ -5,4 +5,4 @@ bdtree.iml
 *.log
 *.state
 *.trees
-out/
+out/target/
