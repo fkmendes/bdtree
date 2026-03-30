@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beast namespace="beast.base.evolution.speciation:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.alignment:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.branchratemodel:beast.base.evolution.likelihood" required="BEAST v2.7.0" version="2.7">
+<beast namespace="beast.base.evolution.speciation:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.alignment:beast.base.evolution.tree.coalescent:beast.base.util:beast.base.math:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.branchratemodel:beast.base.evolution.likelihood" required="BEAST v2.8.0" version="2.8">
 
-
-    <run id="calsim" spec='bdtree.simulator.BirthDeathSerialSamplingTree' rootAge="65" iterations="2001" outputFileName="SimulatedTrees.trees" logEvery="100">
+    <run id="calsim" spec='bdtree.simulator.BirthDeathSerialSamplingTree' iterations="2001" outputFileName="SimulatedTrees.trees" logEvery="100">
         <taxonset id="TaxonSet" spec="TaxonSet">
             <taxon id="sp_1" spec="Taxon"/>
             <taxon id="sp_2" spec="Taxon"/>
@@ -47,22 +46,11 @@
             <taxa idref="TaxonSet"/>
         </trait>
 
-        <birthRate id="BDSS.birthRate" spec="parameter.RealParameter" value="0.5"/>
-        <deathRate id="BDSS.deathRate" spec="parameter.RealParameter" value="0.3"/>
-        <rho id="BDSS.rho" spec="parameter.RealParameter" value="0.1"/>
-        <psi id="BDSS.psi" spec="parameter.RealParameter" value="0.001"/>
+        <rootAge id="BDSS.rootAge" spec="beast.base.spec.inference.parameter.RealScalarParam" value="65.0"/>
+        <birthRate id="BDSS.birthRate" spec="beast.base.spec.inference.parameter.RealScalarParam" value="0.5"/>
+        <deathRate id="BDSS.deathRate" spec="beast.base.spec.inference.parameter.RealScalarParam" value="0.3"/>
+        <rho id="BDSS.rho" spec="beast.base.spec.inference.parameter.RealScalarParam" value="0.1"/>
+        <psi id="BDSS.psi" spec="beast.base.spec.inference.parameter.RealScalarParam" value="0.001"/>
     </run>
-
-    <!-- Alternatively specify the species number and sampled tip dates -->
-    <!--
-    <run id="calsim" spec='treeprior.BDSSTreeSimulator' rootAge="65" iterations="2001" outputFileName="SimulatedTrees.trees" logEvery="100"
-    speciesNr="19"
-    tipTime="sp_1=13.135,sp_2=0.0285,sp_3=11.95,sp_4=35.55,sp_5=25.615,sp_6=14.785,sp_7=28.55,sp_8=0.0,sp_9=0.0,sp_10=0.0,sp_11=0.0,sp_12=0.0,sp_13=0.0,sp_14=0.0,sp_15=0.0,sp_16=0.0,sp_17=0.0,sp_18=6.65,sp_19=0.0285">
-        <birthRate id="BDSS.birthRate" spec="parameter.RealParameter" value="0.5"/>
-        <deathRate id="BDSS.deathRate" spec="parameter.RealParameter" value="0.3"/>
-        <rho id="BDSS.rho" spec="parameter.RealParameter" value="0.1"/>
-        <psi id="BDSS.psi" spec="parameter.RealParameter" value="0.001"/>
-    </run>
-    -->
 
 </beast>

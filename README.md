@@ -40,7 +40,7 @@ mvn exec:exec -Dbeast.args="examples/testing/BDSSLikelihood.xml"
 
 - `examples/testing/BDSSLikelihood.xml` — MCMC analysis with BDSS tree prior (10 taxa, fossils)
 - `examples/testing/BDSSTreeSimulator.xml` — Simulate trees from the BDSS model
-- `examples/testing/Shankarappa.xml` — HIV sequence data analysis
+- `examples/legacy-2.7/` — BEAST 2.7 XML files (require migration for BEAST 3)
 
 ## References
 
