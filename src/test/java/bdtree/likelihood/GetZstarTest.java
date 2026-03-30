@@ -1,17 +1,21 @@
-package test;
+package bdtree.likelihood;
 
-import beast.base.inference.parameter.RealParameter;
 import beast.base.evolution.alignment.Taxon;
 import beast.base.evolution.alignment.TaxonSet;
-import beast.base.evolution.tree.TraitSet;
-import org.junit.Assert;
-import org.junit.Test;
-import bdtree.likelihood.BirthDeathSequentialSampling;
 import beast.base.evolution.tree.Node;
+import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
 import beast.base.evolution.tree.TreeParser;
+import beast.base.spec.domain.NonNegativeReal;
+import beast.base.spec.domain.PositiveReal;
+import beast.base.spec.domain.UnitInterval;
+import beast.base.spec.inference.parameter.RealScalarParam;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class GetZstarTest {
 
@@ -54,10 +58,10 @@ public class GetZstarTest {
 
         // initializing BDSS likelihood
         BirthDeathSequentialSampling treePrior = new BirthDeathSequentialSampling();
-        RealParameter birthRate = new RealParameter(new Double[] { 1.0 });
-        RealParameter deathRate = new RealParameter(new Double[] { 1.0 });
-        RealParameter samplingRate = new RealParameter(new Double[] { 0.001 });
-        RealParameter rho = new RealParameter(new Double[] { 0.0 });
+        var birthRate = new RealScalarParam<>(1.0, PositiveReal.INSTANCE);
+        var deathRate = new RealScalarParam<>(1.0, PositiveReal.INSTANCE);
+        var samplingRate = new RealScalarParam<>(0.001, NonNegativeReal.INSTANCE);
+        var rho = new RealScalarParam<>(0.0, UnitInterval.INSTANCE);
         treePrior.initByName("tree", tree,
                 "birthRate", birthRate,
                 "deathRate", deathRate,
@@ -76,6 +80,6 @@ public class GetZstarTest {
         }
 
         // test!
-        Assert.assertArrayEquals(new Double[] { 4.0, 1.0, 0.0, 3.0, 3.0 }, zStars);
+        assertArrayEquals(new Double[] { 4.0, 1.0, 0.0, 3.0, 3.0 }, zStars);
     }
 }

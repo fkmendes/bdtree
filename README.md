@@ -1,29 +1,47 @@
 # bdtree
 
-A central repository for birth-death models in BEAST 2.
+Birth-death tree models for [BEAST 3](https://github.com/CompEvol/beast3).
 
-**Contributors**:   Fábio K. Mendes, Rong Zhang
+Implements the birth-death-sequential-sampling (BDSS) model for tree likelihood and simulation (Stadler & Yang, 2013).
 
-## Building
-
-In order to build the *bdtree* package .jar file:
-
-(1) Clone and build BEAST2 from [here](https://github.com/CompEvol/beast2);
-
-(2) Clone the *bdtree* repository side-by-side with the *beast2/* directory resulting from step (1);
-
-(3) From *bdtree/*, type:
-
-```
-$ ant
-```
-
-This command invokes the *ant* tool, which executes the building instructions inside *build.xml*. The new *bdtree* .jar file will be put inside *build/dist/*.
+**Contributors:** Fabio K. Mendes, Rong Zhang
 
 ## Models
 
-Below we list all the models contained within *bdtree*:
+| Class | Description |
+|-------|-------------|
+| `BirthDeathSequentialSampling` | BDSS tree likelihood with optional fossil sampling |
+| `BirthDeathSerialSamplingTree` | Tree simulator under the BDSS model |
 
-**Birth-death-sequential-sampling (BDSS)**
+## Building
 
-[[ref]](https://academic.oup.com/sysbio/article/62/5/674/1684217) Tanja Stadler, Ziheng Yang (2013). Dating phylogenies with sequentially sampled tips. *Syst. Biol.* 62(5), 674-688.
+BEAST 3 dependencies are resolved from [Maven Central](https://central.sonatype.com/namespace/io.github.compevol) — no extra configuration needed.
+
+```bash
+mvn compile
+mvn test
+```
+
+To develop against an unreleased SNAPSHOT, install BEAST 3 from source:
+
+```bash
+cd ~/Git/beast3
+mvn install -DskipTests
+```
+
+## Running
+
+```bash
+# Run an analysis
+mvn exec:exec -Dbeast.args="examples/testing/BDSSLikelihood.xml"
+```
+
+## Examples
+
+- `examples/testing/BDSSLikelihood.xml` — MCMC analysis with BDSS tree prior (10 taxa, fossils)
+- `examples/testing/BDSSTreeSimulator.xml` — Simulate trees from the BDSS model
+- `examples/testing/Shankarappa.xml` — HIV sequence data analysis
+
+## References
+
+Stadler, T., & Yang, Z. (2013). Dating phylogenies with sequentially sampled tips. *Systematic Biology*, 62(5), 674-688. https://doi.org/10.1093/sysbio/syt030

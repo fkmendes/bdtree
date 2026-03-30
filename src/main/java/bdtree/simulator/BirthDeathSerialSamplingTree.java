@@ -9,8 +9,11 @@ import beast.base.evolution.alignment.TaxonSet;
 import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.TraitSet;
 import beast.base.evolution.tree.Tree;
-import beast.base.inference.parameter.RealParameter;
 import beast.base.parser.XMLParserException;
+import beast.base.spec.domain.NonNegativeReal;
+import beast.base.spec.domain.PositiveReal;
+import beast.base.spec.domain.UnitInterval;
+import beast.base.spec.type.RealScalar;
 import beast.base.util.Randomizer;
 
 import java.io.IOException;
@@ -33,11 +36,11 @@ public class BirthDeathSerialSamplingTree extends beast.base.inference.Runnable 
     final public Input<Integer> iterationsInput = new Input<>("iterations","number of trees to simulate", Input.Validate.REQUIRED);
     final public Input<Integer> logEveryInput = new Input<>("logEvery","frequency of screen log.", Input.Validate.REQUIRED);
 
-    final public Input<RealParameter> rootAgeInput = new Input<>("rootAge", "the height of simulated trees", Input.Validate.REQUIRED);
-    final public Input<RealParameter> birthRateInput = new Input<>("birthRate", "birth rate parameter", Input.Validate.REQUIRED);
-    final public Input<RealParameter> deathRateInput = new Input<>("deathRate", "death rate parameter", Input.Validate.REQUIRED);
-    final public Input<RealParameter> rhoInput = new Input<>("rho", "probability of sampling each extant lineage", Input.Validate.REQUIRED);
-    final public Input<RealParameter> psiInput = new Input<>("psi", "sampling rate parameter, for analysis including fossils");
+    final public Input<RealScalar<? extends PositiveReal>> rootAgeInput = new Input<>("rootAge", "the height of simulated trees", Input.Validate.REQUIRED);
+    final public Input<RealScalar<? extends PositiveReal>> birthRateInput = new Input<>("birthRate", "birth rate parameter", Input.Validate.REQUIRED);
+    final public Input<RealScalar<? extends PositiveReal>> deathRateInput = new Input<>("deathRate", "death rate parameter", Input.Validate.REQUIRED);
+    final public Input<RealScalar<? extends UnitInterval>> rhoInput = new Input<>("rho", "probability of sampling each extant lineage", Input.Validate.REQUIRED);
+    final public Input<RealScalar<? extends NonNegativeReal>> psiInput = new Input<>("psi", "sampling rate parameter, for analysis including fossils");
 
 
     //tree used for generating samples
@@ -68,7 +71,7 @@ public class BirthDeathSerialSamplingTree extends beast.base.inference.Runnable 
     @Override
     public void initAndValidate() {
         // get inputs
-        tmrca = rootAgeInput.get().getValue();
+        tmrca = rootAgeInput.get().get();
 
         if(taxonsetInput.get() == null){
             // if taxa names are not input, sp_i will be used
@@ -98,10 +101,10 @@ public class BirthDeathSerialSamplingTree extends beast.base.inference.Runnable 
             traitSet = traitSetInput.get();
         }
 
-        lambda = birthRateInput.get().getValue();
-        mu = deathRateInput.get().getValue();
-        rho = rhoInput.get().getValue();
-        psi = psiInput.get().getValue();
+        lambda = birthRateInput.get().get();
+        mu = deathRateInput.get().get();
+        rho = rhoInput.get().get();
+        psi = psiInput.get().get();
 
         // check valid inputs
         if(lambda < mu) {

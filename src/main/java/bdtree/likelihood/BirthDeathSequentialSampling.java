@@ -3,11 +3,14 @@ package bdtree.likelihood;
 import beast.base.core.Description;
 import beast.base.core.Input;
 import beast.base.inference.State;
-import beast.base.inference.parameter.RealParameter;
 import beast.base.inference.Distribution;
 import beast.base.evolution.tree.Node;
 import beast.base.evolution.tree.Tree;
 import beast.base.inference.util.InputUtil;
+import beast.base.spec.domain.NonNegativeReal;
+import beast.base.spec.domain.PositiveReal;
+import beast.base.spec.domain.UnitInterval;
+import beast.base.spec.type.RealScalar;
 
 import java.util.List;
 import java.util.Random;
@@ -20,10 +23,10 @@ import java.util.Random;
 // Note: to comment tree.getRoot.sort() in tree logger
 public class BirthDeathSequentialSampling extends Distribution {
     final public Input<Tree> treeInput = new Input<>("tree", "tree over which to calculate a prior or likelihood");
-    final public Input<RealParameter> birthRateInput = new Input<>("birthRate", "birth rate parameter", Input.Validate.REQUIRED);
-    final public Input<RealParameter> deathRateInput = new Input<>("deathRate", "death rate parameter", Input.Validate.REQUIRED);
-    final public Input<RealParameter> rhoInput = new Input<>("rho", "probability of sampling each extant lineage", Input.Validate.REQUIRED);
-    final public Input<RealParameter> psiInput = new Input<>("psi", "sampling rate parameter, for analysis including fossils");
+    final public Input<RealScalar<? extends PositiveReal>> birthRateInput = new Input<>("birthRate", "birth rate parameter", Input.Validate.REQUIRED);
+    final public Input<RealScalar<? extends PositiveReal>> deathRateInput = new Input<>("deathRate", "death rate parameter", Input.Validate.REQUIRED);
+    final public Input<RealScalar<? extends UnitInterval>> rhoInput = new Input<>("rho", "probability of sampling each extant lineage", Input.Validate.REQUIRED);
+    final public Input<RealScalar<? extends NonNegativeReal>> psiInput = new Input<>("psi", "sampling rate parameter, for analysis including fossils");
     final public Input<Double> rootAgeLowerInput = new Input<>("lower", "lower soft bound for the root age");
     final public Input<Double> rootAgeUpperInput = new Input<>("upper", "upper soft bound for the root age");
     final public Input<Double> rootAgeInput = new Input<>("rootAge", "specified root age when the tree height is fixed");
@@ -69,13 +72,13 @@ public class BirthDeathSequentialSampling extends Distribution {
     }
 
     private void getBDSSModelParameters(){
-        birthRate = birthRateInput.get().getValue();
-        deathRate = deathRateInput.get().getValue();
-        rho = rhoInput.get().getValue();
+        birthRate = birthRateInput.get().get();
+        deathRate = deathRateInput.get().get();
+        rho = rhoInput.get().get();
         if (psiInput.get() == null) {
             psi = 0.0;
         } else {
-            psi = psiInput.get().getValue();
+            psi = psiInput.get().get();
         }
     }
 
@@ -275,7 +278,7 @@ public class BirthDeathSequentialSampling extends Distribution {
 
     @Override
     protected boolean requiresRecalculation() {
-        return super.requiresRecalculation() || birthRateInput.get().somethingIsDirty() ||
+        return super.requiresRecalculation() || InputUtil.isDirty(birthRateInput) ||
                 InputUtil.isDirty(deathRateInput) || InputUtil.isDirty(psiInput) ||
                 InputUtil.isDirty(rhoInput);
     }
