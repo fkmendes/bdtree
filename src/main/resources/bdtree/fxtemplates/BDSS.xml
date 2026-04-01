@@ -1,5 +1,5 @@
 <beast version='2.0'
-       namespace='beast.app.beauti:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.math.distributions'>
+       namespace='beast.app.beauti:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.branchratemodel:beast.base.evolution.speciation:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood:beast.evolution:beast.base.math.distributions:beast.base.spec.inference.parameter'>
 
     <!-- tree priors -->
     <mergewith point='treePriorTemplates'>
@@ -16,31 +16,31 @@
             <![CDATA[
     <!-- Birth Death Sequential Sampling model-->
     <BDSSModel spec="bdtree.likelihood.BirthDeathSequentialSampling" id="BDSS.t:$(n)" tree="@Tree.t:$(n)">
-        <parameter id="birthRateBDSS.t:$(n)" name="birthRate" spec="parameter.RealParameter" value ="1.0" lower="0.0"/>
-        <parameter id="deathRateBDSS.t:$(n)" name="deathRate" spec="parameter.RealParameter" value="1.0" lower="0.0"/>
-        <parameter id="rhoBDSS.t:$(n)" name="rho" spec="parameter.RealParameter" value="0.1" lower="0.0" upper="1.0"/>
-        <parameter id="psiBDSS.t:$(n)" name="psi" spec="parameter.RealParameter" value="0.001" lower="0.0" upper="1.0"/>
+        <birthRate id="birthRateBDSS.t:$(n)" spec="RealScalarParam" domain="PositiveReal" value="1.0"/>
+        <deathRate id="deathRateBDSS.t:$(n)" spec="RealScalarParam" domain="PositiveReal" value="1.0"/>
+        <rho id="rhoBDSS.t:$(n)" spec="RealScalarParam" domain="UnitInterval" value="0.1"/>
+        <psi id="psiBDSS.t:$(n)" spec="RealScalarParam" domain="NonNegativeReal" value="0.001"/>
 	</BDSSModel>
 
-	<distribution id="birthRatePriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@birthRateBDSS.t:$(n)">
-        <distr id="Exponential.2" spec="beast.base.inference.distribution.Exponential" mean="0.5"/>
+	<distribution id="birthRatePriorBDSS.t:$(n)" spec="beast.base.spec.inference.distribution.Exponential" param="@birthRateBDSS.t:$(n)">
+        <mean spec="RealScalarParam" domain="PositiveReal" value="0.5" estimate="false"/>
 	</distribution>
 
-	<distribution id="deathRatePriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@deathRateBDSS.t:$(n)">
-		 <distr id="Exponential.3" spec="beast.base.inference.distribution.Exponential" mean="0.01"/>
+	<distribution id="deathRatePriorBDSS.t:$(n)" spec="beast.base.spec.inference.distribution.Exponential" param="@deathRateBDSS.t:$(n)">
+		 <mean spec="RealScalarParam" domain="PositiveReal" value="0.01" estimate="false"/>
 	</distribution>
 
-	<distribution id="rhoPriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@rhoBDSS.t:$(n)">
-		<distr id="Exponential.0" spec="beast.base.inference.distribution.Exponential" mean="0.1"/>
+	<distribution id="rhoPriorBDSS.t:$(n)" spec="beast.base.spec.inference.distribution.Exponential" param="@rhoBDSS.t:$(n)">
+		<mean spec="RealScalarParam" domain="PositiveReal" value="0.1" estimate="false"/>
 	</distribution>
-	<distribution id="psiPriorBDSS.t:$(n)" spec="beast.base.inference.distribution.Prior" x="@psiBDSS.t:$(n)">
-		  <distr id="Exponential.1" spec="beast.base.inference.distribution.Exponential" mean="0.01"/>
+	<distribution id="psiPriorBDSS.t:$(n)" spec="beast.base.spec.inference.distribution.Exponential" param="@psiBDSS.t:$(n)">
+		  <mean spec="RealScalarParam" domain="PositiveReal" value="0.01" estimate="false"/>
 	</distribution>
 
-    <operator id="BirthRateScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@birthRateBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
-    <operator id="DeathRateScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@deathRateBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
-    <operator id="RhoScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@rhoBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
-    <operator id="PsiScalerBDSS.t:$(n)" spec="ScaleOperator" parameter="@psiBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+    <operator id="BirthRateScalerBDSS.t:$(n)" spec="beast.base.spec.inference.operator.ScaleOperator" parameter="@birthRateBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+    <operator id="DeathRateScalerBDSS.t:$(n)" spec="beast.base.spec.inference.operator.ScaleOperator" parameter="@deathRateBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+    <operator id="RhoScalerBDSS.t:$(n)" spec="beast.base.spec.inference.operator.ScaleOperator" parameter="@rhoBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
+    <operator id="PsiScalerBDSS.t:$(n)" spec="beast.base.spec.inference.operator.ScaleOperator" parameter="@psiBDSS.t:$(n)" scaleFactor="0.75" weight="10.0"/>
 
     <!-- operators for BDSS trees -->
     <operator id="TreeScalerBDSS.t:$(n)" spec="ScaleOperator" scaleFactor="0.5" tree="@Tree.t:$(n)" weight="5.0"/>
