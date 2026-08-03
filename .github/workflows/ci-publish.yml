@@ -47,9 +47,9 @@ jobs:
         if: "!startsWith(github.ref, 'refs/tags/v')"
         run: mvn verify
 
-      - name: Publish to Maven Central
+      - name: Build release artifacts (Maven Central publishing disabled for now)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mvn -Prelease clean deploy
+        run: mvn clean package
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}

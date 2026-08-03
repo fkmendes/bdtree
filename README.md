@@ -6,6 +6,13 @@ Implements the birth-death-sequential-sampling (BDSS) model for tree likelihood 
 
 **Contributors:** Fabio K. Mendes, Rong Zhang
 
+## Compatibility
+
+The previous BEAST 2-compatible release is available as:
+- v0.0.2
+
+For users running BEAST 2, please use the v0.0.2 release.
+
 ## Models
 
 | Class | Description |
